@@ -1,1 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Maddy Low – To Be Near</title>
+  <meta name="description" content="Follow Maddy Low and sign up to be the first to hear her new single 'To Be Near' – out soon on Timeless Records.">
+  <link href="https://fonts.googleapis.com/css2?family=Georgia:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="favicon_round.ico">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Georgia, serif;
+      background-color: #2e2b27;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Blurry background layer */
+    .background-blur {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('images/MaddyTobenear.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: blur(15px);
+      transform: scale(1.1); /* Prevents blur edge artifacts */
+      z-index: 1;
+    }
+
+    /* Dark overlay for better text readability */
+    .dark-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(46, 43, 39, 0.6);
+      z-index: 2;
+    }
+
+    /* Main content container - stays clear */
+    .main-container {
+      position: relative;
+      z-index: 3;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .content {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 2.5rem;
+      border-radius: 24px;
+      max-width: 440px;
+      width: 100%;
+      color: #fdfcf9;
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 16px 64px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      margin: 0 0 0.5rem 0;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 400;
+      margin: 0 0 2rem 0;
+      opacity: 0.9;
+      font-style: italic;
+    }
+
+    .cover-art {
+      width: 100%;
+      max-width: 280px;
+      border-radius: 16px;
+      margin: 0 auto 2rem auto;
+      display: block;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s ease;
+    }
+
+    .cover-art:hover {
+      transform: scale(1.02);
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 1.5rem;
+      margin: 0.75rem 0;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      color: white;
+      width: 100%;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn:hover:before {
+      left: 100%;
+    }
+
+    .btn svg {
+      margin-right: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .spotify {
+      background: linear-gradient(135deg, #1DB954, #1ed760);
+      box-shadow: 0 4px 15px rgba(29, 185, 84, 0.3);
+    }
+
+    .spotify:hover {
+      background: linear-gradient(135deg, #1aa34a, #1DB954);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(29, 185, 84, 0.4);
+    }
+
+    .youtube {
+      background: linear-gradient(135deg, #FF0000, #ff3333);
+      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+    }
+
+    .youtube:hover {
+      background: linear-gradient(135deg, #cc0000, #FF0000);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+    }
+
+    .email {
+      background: linear-gradient(135deg, #8e7d6b, #a1917e);
+      box-shadow: 0 4px 15px rgba(142, 125, 107, 0.3);
+    }
+
+    .email:hover {
+      background: linear-gradient(135deg, #a1917e, #b4a291);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(142, 125, 107, 0.4);
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 1rem;
+      }
+      
+      .content {
+        padding: 2rem;
+        border-radius: 20px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      h2 {
+        font-size: 1rem;
+      }
+      
+      .btn {
+        padding: 0.9rem 1.2rem;
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .content {
+        padding: 1.5rem;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      .btn {
+        padding: 0.8rem 1rem;
+        margin: 0.5rem 0;
+      }
+    }
+
+    /* Loading animation */
+    .content {
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Focus states for accessibility */
+    .btn:focus {
+      outline: 3px solid rgba(255, 255, 255, 0.5);
+      outline-offset: 2px;
+    }
+  </style>
+
+  <!-- Meta Pixel for Maddy -->
+  <script>
+    !function(f,b,e,v,n,t,s){
+      if(f.fbq)return;n=f.fbq=function(){n.callMethod? n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '2435884996781718');
+    fbq('track', 'PageView');
+    fbq('trackCustom', 'ToBeNear_PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=2435884996781718&ev=PageView&noscript=1"/></noscript>
+</head>
+<body>
+  <!-- Blurry background -->
+  <div class="background-blur"></div>
+  
+  <!-- Dark overlay -->
+  <div class="dark-overlay"></div>
+  
+  <!-- Main content -->
+  <div class="main-container">
+    <div class="content">
+      <h1>To Be Near</h1>
+      <h2>New single by Maddy Low — out June 5th</h2>
+      <img src="images/MaddyTobenear.jpg" alt="To Be Near Cover Art" class="cover-art"/>
+
+      <a class="btn spotify" id="followBtn" href="https://listennow-six.vercel.app/api/login" target="_blank" rel="noopener">Listen Now</a>
+
+
+      
+
+      
+    </div>
+  </div>
+
+  <script>
+    // Enhanced tracking with error handling
+    function trackEvent(eventName) {
+      try {
+        if (typeof fbq !== 'undefined') {
+          fbq('trackCustom', eventName);
+        }
+      } catch (error) {
+        console.warn('Facebook pixel tracking error:', error);
+      }
+    }
+
+    // Add click tracking with improved error handling
+    document.getElementById('followBtn').addEventListener('click', function(e) {
+      trackEvent('ToBeNear_Click_Follow');
+      
+      // Fallback for mobile devices that might not handle spotify:// protocol
+      if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        e.preventDefault();
+        // Try to open Spotify app, fallback to web
+        window.location.href = 'spotify://artist/3uIsve9Dn2WsIYgE3C7I86';
+        setTimeout(() => {
+          window.open('https://open.spotify.com/artist/3uIsve9Dn2WsIYgE3C7I86', '_blank');
+        }, 1000);
+      }
+    });
+
+    document.getElementById('youtubeBtn').addEventListener('click', function() {
+      trackEvent('ToBeNear_Click_YouTube');
+    });
+
+    document.getElementById('emailBtn').addEventListener('click', function() {
+      trackEvent('ToBeNear_Click_EmailSignup');
+    });
+
+    // Add keyboard navigation support
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        if (e.target.classList.contains('btn')) {
+          e.preventDefault();
+          e.target.click();
+        }
+      }
+    });
+
+    // Preload the background image for better performance
+    const img = new Image();
+    img.src = 'images/MaddyTobenear.jpg';
+  </script>
+</body>
+</html>
