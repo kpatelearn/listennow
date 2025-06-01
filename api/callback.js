@@ -50,13 +50,16 @@ export default async function handler(req, res) {
 
     // Follow artist and save track with proper error handling
     try {
-      // Follow artist
-      const followRes = await fetch(`https://api.spotify.com/v1/me/following?type=artist&ids=${artist_id}`, {
+      // Follow artist - try with JSON body instead of query params
+      const followRes = await fetch('https://api.spotify.com/v1/me/following?type=artist', {
         method: 'PUT',
         headers: { 
           'Authorization': 'Bearer ' + access_token,
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({
+          ids: [artist_id]
+        })
       });
       
       if (!followRes.ok) {
@@ -66,13 +69,16 @@ export default async function handler(req, res) {
         console.log('Successfully followed artist');
       }
 
-      // Save track
-      const saveRes = await fetch(`https://api.spotify.com/v1/me/tracks?ids=${track_id}`, {
+      // Save track - also try with JSON body
+      const saveRes = await fetch('https://api.spotify.com/v1/me/tracks', {
         method: 'PUT',
         headers: { 
           'Authorization': 'Bearer ' + access_token,
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({
+          ids: [track_id]
+        })
       });
       
       if (!saveRes.ok) {
