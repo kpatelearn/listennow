@@ -48,30 +48,42 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Failed to get access token', details: tokenData });
     }
 
-    // Follow artist and save track
-    const [followRes, saveRes] = await Promise.allSettled([
-      fetch(`https://api.spotify.com/v1/me/following?type=artist&ids=${artist_id}`, {
+    // Follow artist and save track with proper error handling
+    try {
+      // Follow artist
+      const followRes = await fetch(`https://api.spotify.com/v1/me/following?type=artist&ids=${artist_id}`, {
         method: 'PUT',
         headers: { 
           'Authorization': 'Bearer ' + access_token,
           'Content-Type': 'application/json'
         }
-      }),
-      fetch(`https://api.spotify.com/v1/me/tracks?ids=${track_id}`, {
-        method: 'PUT',
-        headers: { 
-          'Authorization': 'Bearer ' + access_token,
-          'Content-Type': 'application/json'
-        }
-      })
-    ]);
+      });
+      
+      if (!followRes.ok) {
+        const followError = await followRes.text();
+        console.error('Follow artist failed:', followRes.status, followError);
+      } else {
+        console.log('Successfully followed artist');
+      }
 
-    // Log any errors but don't fail the redirect
-    if (followRes.status === 'rejected') {
-      console.error('Follow artist failed:', followRes.reason);
-    }
-    if (saveRes.status === 'rejected') {
-      console.error('Save track failed:', saveRes.reason);
+      // Save track
+      const saveRes = await fetch(`https://api.spotify.com/v1/me/tracks?ids=${track_id}`, {
+        method: 'PUT',
+        headers: { 
+          'Authorization': 'Bearer ' + access_token,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!saveRes.ok) {
+        const saveError = await saveRes.text();
+        console.error('Save track failed:', saveRes.status, saveError);
+      } else {
+        console.log('Successfully saved track');
+      }
+
+    } catch (apiError) {
+      console.error('API calls failed:', apiError);
     }
 
     // Redirect to Spotify song page
