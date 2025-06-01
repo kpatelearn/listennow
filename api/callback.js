@@ -48,9 +48,32 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Failed to get access token', details: tokenData });
     }
 
-    // Follow artist and save track with proper error handling
+    // First, let's verify we have a valid access token and can access the user's profile
+    console.log('Access token received:', access_token ? 'YES' : 'NO');
+    console.log('Token length:', access_token ? access_token.length : 0);
+
     try {
-      // Follow artist - try with JSON body instead of query params
+      // Test access token with user profile
+      const userProfileRes = await fetch('https://api.spotify.com/v1/me', {
+        headers: { 'Authorization': 'Bearer ' + access_token }
+      });
+      
+      if (!userProfileRes.ok) {
+        const userError = await userProfileRes.text();
+        console.error('User profile check failed:', userProfileRes.status, userError);
+        return res.status(500).json({ error: 'Invalid access token' });
+      }
+      
+      const userProfile = await userProfileRes.json();
+      console.log('User profile:', {
+        id: userProfile.id,
+        display_name: userProfile.display_name,
+        country: userProfile.country,
+        product: userProfile.product
+      });
+
+      // Now try to follow artist
+      console.log('Attempting to follow artist:', artist_id);
       const followRes = await fetch('https://api.spotify.com/v1/me/following?type=artist', {
         method: 'PUT',
         headers: { 
@@ -62,14 +85,23 @@ export default async function handler(req, res) {
         })
       });
       
+      console.log('Follow response status:', followRes.status);
       if (!followRes.ok) {
         const followError = await followRes.text();
         console.error('Follow artist failed:', followRes.status, followError);
       } else {
         console.log('Successfully followed artist');
+        
+        // Verify the follow worked
+        const checkFollowRes = await fetch(`https://api.spotify.com/v1/me/following/contains?type=artist&ids=${artist_id}`, {
+          headers: { 'Authorization': 'Bearer ' + access_token }
+        });
+        const isFollowing = await checkFollowRes.json();
+        console.log('Following verification:', isFollowing);
       }
 
-      // Save track - use correct query parameter format per Spotify docs
+      // Now try to save track
+      console.log('Attempting to save track:', track_id);
       const saveRes = await fetch(`https://api.spotify.com/v1/me/tracks?ids=${track_id}`, {
         method: 'PUT',
         headers: { 
@@ -77,11 +109,12 @@ export default async function handler(req, res) {
         }
       });
       
+      console.log('Save response status:', saveRes.status);
       if (!saveRes.ok) {
         const saveError = await saveRes.text();
         console.error('Save track failed:', saveRes.status, saveError);
         
-        // Let's also check if the track exists and is available
+        // Check if track exists and is available
         const trackInfoRes = await fetch(`https://api.spotify.com/v1/tracks/${track_id}`, {
           headers: { 'Authorization': 'Bearer ' + access_token }
         });
@@ -91,14 +124,23 @@ export default async function handler(req, res) {
           console.log('Track info:', {
             name: trackInfo.name,
             artists: trackInfo.artists?.map(a => a.name),
-            available_markets: trackInfo.available_markets?.length || 'none',
-            is_playable: trackInfo.is_playable
+            available_markets: trackInfo.available_markets?.slice(0, 5) || 'none',
+            total_markets: trackInfo.available_markets?.length || 0,
+            is_playable: trackInfo.is_playable,
+            user_country: userProfile.country
           });
         } else {
           console.error('Could not fetch track info:', trackInfoRes.status);
         }
       } else {
         console.log('Successfully saved track');
+        
+        // Verify the save worked
+        const checkSaveRes = await fetch(`https://api.spotify.com/v1/me/tracks/contains?ids=${track_id}`, {
+          headers: { 'Authorization': 'Bearer ' + access_token }
+        });
+        const isSaved = await checkSaveRes.json();
+        console.log('Save verification:', isSaved);
       }
 
     } catch (apiError) {
