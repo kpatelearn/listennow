@@ -69,21 +69,34 @@ export default async function handler(req, res) {
         console.log('Successfully followed artist');
       }
 
-      // Save track - also try with JSON body
-      const saveRes = await fetch('https://api.spotify.com/v1/me/tracks', {
+      // Save track - use correct query parameter format per Spotify docs
+      const saveRes = await fetch(`https://api.spotify.com/v1/me/tracks?ids=${track_id}`, {
         method: 'PUT',
         headers: { 
-          'Authorization': 'Bearer ' + access_token,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          ids: [track_id]
-        })
+          'Authorization': 'Bearer ' + access_token
+        }
       });
       
       if (!saveRes.ok) {
         const saveError = await saveRes.text();
         console.error('Save track failed:', saveRes.status, saveError);
+        
+        // Let's also check if the track exists and is available
+        const trackInfoRes = await fetch(`https://api.spotify.com/v1/tracks/${track_id}`, {
+          headers: { 'Authorization': 'Bearer ' + access_token }
+        });
+        
+        if (trackInfoRes.ok) {
+          const trackInfo = await trackInfoRes.json();
+          console.log('Track info:', {
+            name: trackInfo.name,
+            artists: trackInfo.artists?.map(a => a.name),
+            available_markets: trackInfo.available_markets?.length || 'none',
+            is_playable: trackInfo.is_playable
+          });
+        } else {
+          console.error('Could not fetch track info:', trackInfoRes.status);
+        }
       } else {
         console.log('Successfully saved track');
       }
