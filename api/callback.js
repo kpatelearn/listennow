@@ -12,6 +12,7 @@ export default async function handler(req, res) {
   const client_id = process.env.SPOTIFY_CLIENT_ID;
   const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
   const redirect_uri = process.env.REDIRECT_URI || 'https://listennow-six.vercel.app/api/callback';
+
   const track_id = '41a4u7k1qElUrR5T2toecE';
   const artist_id = '3uIsve9Dn2WsIYgE3C7I86'; // Maddy's artist ID
 
