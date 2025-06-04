@@ -148,7 +148,7 @@ export default async function handler(req, res) {
     }
 
     // Redirect to Spotify song page
-    res.redirect(`https://open.spotify.com/track/${track_id}`);
+    res.redirect(`/play.html?type=track&id=${track_id}`);
 
   } catch (error) {
     console.error('Callback error:', error);
