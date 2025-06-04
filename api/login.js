@@ -11,7 +11,7 @@ export default async function handler(req, res) {
 
   const client_id = process.env.SPOTIFY_CLIENT_ID;
   const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-  const redirect_uri = process.env.REDIRECT_URI || 'https://listennow-six.vercel.app/api/callback';
+  const redirect_uri = process.env.REDIRECT_URI 
 
   if (!client_id || !client_secret) {
     return res.status(500).json({ error: 'Missing Spotify credentials' });
