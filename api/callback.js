@@ -143,12 +143,21 @@ export default async function handler(req, res) {
         console.log('Save verification:', isSaved);
       }
 
+      // Follow Maddy's playlist
+const playlist_id = '5mykZdkyXIJNrmULYGk4x0';
+const followPlaylistRes = await fetch(`https://api.spotify.com/v1/playlists/${playlist_id}/followers`, {
+  method: 'PUT',
+  headers: { 'Authorization': 'Bearer ' + access_token }
+});
+console.log('Follow playlist status:', followPlaylistRes.status);
+
+
     } catch (apiError) {
       console.error('API calls failed:', apiError);
     }
 
     // Redirect to Spotify song page
-    res.redirect(`/play.html?type=track&id=${track_id}`);
+    res.redirect(`/play.html?type=playlist&id=5mykZdkyXIJNrmULYGk4x0`);
 
   } catch (error) {
     console.error('Callback error:', error);
